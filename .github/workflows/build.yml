@@ -1,0 +1,38 @@
+name: Build img_resize.exe
+
+# 触发方式：
+#  1) 每次 push 到 main 自动构建
+#  2) 也可以在 Actions 页面手动点 "Run workflow"
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install pillow pyinstaller
+
+      - name: Build one-file exe
+        run: >
+          pyinstaller --onefile --noconfirm --clean
+          --name img_resize
+          img_resize.py
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: img_resize-windows
+          path: dist/img_resize.exe
