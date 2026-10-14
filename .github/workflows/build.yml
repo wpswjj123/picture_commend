@@ -25,14 +25,22 @@ jobs:
           python -m pip install --upgrade pip
           pip install pillow pyinstaller
 
-      - name: Build one-file exe
+      - name: Build command-line exe
         run: >
           pyinstaller --onefile --noconfirm --clean
           --name img_resize
           img_resize.py
 
+      - name: Build GUI exe
+        run: >
+          pyinstaller --onefile --noconfirm --clean --windowed
+          --name img_resize_gui
+          img_resize_gui.py
+
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: img_resize-windows
-          path: dist/img_resize.exe
+          path: |
+            dist/img_resize.exe
+            dist/img_resize_gui.exe
